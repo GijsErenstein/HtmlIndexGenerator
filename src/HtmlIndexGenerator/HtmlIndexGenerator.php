@@ -3,53 +3,77 @@
 namespace HtmlIndexGenerator;
 
 use DOMDocument;
+use DOMElement;
+use DOMNodeList;
 
 class HtmlIndexGenerator
 {
+    const DEFAULT_PREFIX = 'index-';
+
     /**
-     * @param string $htmlString
-     * @param string $tag
-     *
-     * @return string
+     * @var DOMDocument
      */
-    public static function appendIndexesToElement(string $htmlString, string $tag): string
+    private $domDocument;
+
+    /**
+     * @var DOMNodeList
+     */
+    private $elements;
+
+    /**
+     * @var string|null
+     */
+    private $indexPrefix;
+
+
+    /**
+     * HtmlIndexGenerator constructor.
+     *
+     * @param string      $htmlString
+     * @param string      $tag
+     * @param string|null $indexPrefix
+     */
+    public function __construct(string $htmlString, string $tag, ? string $indexPrefix = self::DEFAULT_PREFIX)
     {
-        $domDocument = new DOMDocument;
-        $domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        $this->indexPrefix = $indexPrefix;
+        $this->domDocument = new DOMDocument;
+        $this->domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        $this->elements = $this->domDocument->getElementsByTagName($tag);
+        $this->appendIndexesToElement();
 
-        $elements = $domDocument->getElementsByTagName($tag);
+    }
 
-        /** @var \DOMElement $element */
-        foreach ($elements as $key => $element) {
-            $element->setAttribute('id', 'index-'.$key);
-            $element->setAttribute('name', 'index-'.$key);
+    private function appendIndexesToElement()
+    {
+        /** @var DOMElement $element */
+        foreach ($this->elements as $key => $element) {
+            $element->setAttribute('id', $this->indexPrefix.$key);
+            $element->setAttribute('name', $this->indexPrefix.$key);
         }
 
-        $newString = $domDocument->saveHTML();
-
-        return $newString;
     }
 
     /**
-     * @param string $htmlString
-     * @param string $tag
-     *
+     * @return string
+     */
+    public function getHtmlWithIndexedIds(): string
+    {
+        $newString = $this->domDocument->saveHTML();
+
+        return $newString;
+
+    }
+
+    /**
      * @return array
      */
-    public static function getIndexItemsForElement(string $htmlString, string $tag): array
+    public function createIndexItemsForElement(): array
     {
         $indexItems = [];
-        $domDocument = new DOMDocument;
-        $domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
 
-        $elements = $domDocument->getElementsByTagName($tag);
-
-        /** @var \DOMElement $element */
-        foreach ($elements as $key => $element) {
-            $indexItems[] = [
-                'id' => 'index-'.$key,
-                'name' => $element->textContent
-            ];
+        /** @var DOMElement $element */
+        foreach ($this->elements as $key => $element) {
+            $indexItems[] = new IndexItem($this->indexPrefix.$key, $element->textContent);
         }
 
         return $indexItems;
