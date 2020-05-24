@@ -1,8 +1,6 @@
 <?php
 
-
 namespace HtmlIndexGenerator;
-
 
 interface HtmlIndexGenerationStrategyInterface
 {
@@ -12,5 +10,4 @@ interface HtmlIndexGenerationStrategyInterface
      * @return string
      */
     public function generateHtml(IndexItemsCollection $indexItemsCollection): string;
-
 }

@@ -15,7 +15,6 @@ class IndexItem
     private $name;
 
     /**
-     *
      * @param string $id
      * @param string $name
      */
@@ -38,7 +37,7 @@ class IndexItem
      *
      * @return IndexItem
      */
-    public function setId(string $id): IndexItem
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -58,7 +57,7 @@ class IndexItem
      *
      * @return IndexItem
      */
-    public function setName(string $name): IndexItem
+    public function setName(string $name): self
     {
         $this->name = $name;
 

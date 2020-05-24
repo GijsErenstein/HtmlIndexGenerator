@@ -25,7 +25,7 @@ class HtmlIndexGenerator
      * @param string      $tag
      * @param string|null $indexPrefix
      */
-    public function __construct(string $htmlString, string $tag, ? string $indexPrefix = self::DEFAULT_PREFIX)
+    public function __construct(string $htmlString, string $tag, ?string $indexPrefix = self::DEFAULT_PREFIX)
     {
         $this->domDocument = new DOMDocument();
         $this->indexItemsCollection = new IndexItemsCollection();
@@ -34,7 +34,7 @@ class HtmlIndexGenerator
 
     private function generateHtmlAndIndexed($htmlString, $tag, $indexPrefix)
     {
-        $this->domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        $this->domDocument->loadXML('<div>'.$htmlString.'</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
         $elements = $this->domDocument->getElementsByTagName($tag);
 
         /** @var DOMElement $element */
@@ -68,9 +68,8 @@ class HtmlIndexGenerator
      *
      * @return string
      */
-    public function getIndexHtml(HtmlIndexGenerationStrategyInterface $indexStrategy ): string
+    public function getIndexHtml(HtmlIndexGenerationStrategyInterface $indexStrategy): string
     {
         return $indexStrategy->generateHtml($this->indexItemsCollection);
     }
-
 }
