@@ -4,7 +4,6 @@ namespace HtmlIndexGenerator;
 
 use DOMDocument;
 use DOMElement;
-use DOMNodeList;
 
 class HtmlIndexGenerator
 {
@@ -14,17 +13,10 @@ class HtmlIndexGenerator
      * @var DOMDocument
      */
     private $domDocument;
-
     /**
-     * @var DOMNodeList
+     * @var IndexItemsCollection
      */
-    private $elements;
-
-    /**
-     * @var string|null
-     */
-    private $indexPrefix;
-
+    private $indexItemsCollection;
 
     /**
      * HtmlIndexGenerator constructor.
@@ -35,22 +27,22 @@ class HtmlIndexGenerator
      */
     public function __construct(string $htmlString, string $tag, ? string $indexPrefix = self::DEFAULT_PREFIX)
     {
-        $this->indexPrefix = $indexPrefix;
-        $this->domDocument = new DOMDocument;
-        $this->domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
-        $this->elements = $this->domDocument->getElementsByTagName($tag);
-        $this->appendIndexesToElement();
-
+        $this->domDocument = new DOMDocument();
+        $this->indexItemsCollection = new IndexItemsCollection();
+        $this->generateHtmlAndIndexed($htmlString, $tag, $indexPrefix);
     }
 
-    private function appendIndexesToElement()
+    private function generateHtmlAndIndexed($htmlString, $tag, $indexPrefix)
     {
-        /** @var DOMElement $element */
-        foreach ($this->elements as $key => $element) {
-            $element->setAttribute('id', $this->indexPrefix.$key);
-            $element->setAttribute('name', $this->indexPrefix.$key);
-        }
+        $this->domDocument->loadXML('<div>' . $htmlString . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        $elements = $this->domDocument->getElementsByTagName($tag);
 
+        /** @var DOMElement $element */
+        foreach ($elements as $key => $element) {
+            $element->setAttribute('id', $indexPrefix.$key);
+            $element->setAttribute('name', $indexPrefix.$key);
+            $this->indexItemsCollection->add(new IndexItem($indexPrefix.$key, $element->textContent));
+        }
     }
 
     /**
@@ -61,22 +53,24 @@ class HtmlIndexGenerator
         $newString = $this->domDocument->saveHTML();
 
         return $newString;
-
     }
 
     /**
-     * @return IndexItem[]|array
+     * @return IndexItemsCollection
      */
-    public function getIndexItems(): array
+    public function getIndexItems(): IndexItemsCollection
     {
-        $indexItems = [];
+        return $this->indexItemsCollection;
+    }
 
-        /** @var DOMElement $element */
-        foreach ($this->elements as $key => $element) {
-            $indexItems[] = new IndexItem($this->indexPrefix.$key, $element->textContent);
-        }
-
-        return $indexItems;
+    /**
+     * @param HtmlIndexGenerationStrategyInterface $indexStrategy
+     *
+     * @return string
+     */
+    public function getIndexHtml(HtmlIndexGenerationStrategyInterface $indexStrategy ): string
+    {
+        return $indexStrategy->generateHtml($this->indexItemsCollection);
     }
 
 }

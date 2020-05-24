@@ -41,6 +41,7 @@ class IndexItem
     public function setId(string $id): IndexItem
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -60,6 +61,7 @@ class IndexItem
     public function setName(string $name): IndexItem
     {
         $this->name = $name;
+
         return $this;
     }
 }
