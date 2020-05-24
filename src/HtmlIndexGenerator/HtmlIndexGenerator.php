@@ -67,7 +67,7 @@ class HtmlIndexGenerator
     /**
      * @return IndexItem[]|array
      */
-    public function getIndexItemsForElement(): array
+    public function getIndexItems(): array
     {
         $indexItems = [];
 
