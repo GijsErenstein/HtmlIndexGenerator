@@ -5,5 +5,10 @@
     "php": "^7.2",
     "ext-dom": "*",
     "ext-libxml": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "HelloWorld": "src/"
+    }
   }
 }
