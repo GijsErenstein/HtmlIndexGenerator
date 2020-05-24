@@ -6,7 +6,6 @@ use HtmlIndexGenerator\IndexItemsCollection;
 
 class DefaultListIndexGenerationStrategy implements HtmlIndexGenerationStrategyInterface
 {
-
     /**
      * @param IndexItemsCollection $indexItemsCollection
      *
