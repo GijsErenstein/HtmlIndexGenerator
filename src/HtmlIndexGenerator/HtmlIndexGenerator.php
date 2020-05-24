@@ -1,10 +1,17 @@
 <?php
 
+namespace HtmlIndexGenerator;
+
 use DOMDocument;
-use DOMNode;
 
 class HtmlIndexGenerator
 {
+    /**
+     * @param string $htmlString
+     * @param string $tag
+     *
+     * @return string
+     */
     public static function appendIndexesToElement(string $htmlString, string $tag): string
     {
         $domDocument = new DOMDocument;
@@ -23,6 +30,12 @@ class HtmlIndexGenerator
         return $newString;
     }
 
+    /**
+     * @param string $htmlString
+     * @param string $tag
+     *
+     * @return array
+     */
     public static function getIndexItemsForElement(string $htmlString, string $tag): array
     {
         $indexItems = [];

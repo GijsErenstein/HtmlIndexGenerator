@@ -2,6 +2,8 @@
   "name": "gijserenstein/html-index-generator",
   "description": "appends id's to certain selected tags in a html string and exports a list of id's + names to create index anchor links on a page",
   "require": {
-    "php": "^7.2"
+    "php": "^7.2",
+    "ext-dom": "*",
+    "ext-libxml": "*"
   }
 }
